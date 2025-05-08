@@ -1,30 +1,10 @@
 from datetime import datetime, timedelta
+import os
 
 def print_hourly_times():
     current_time = datetime.now()
     end_time = current_time.replace(hour=22, minute=0, second=0, microsecond=0)  # 10PM
-    ''' 
-    if current_time >= end_time:
-        print("It's already past 10PM!")
-        return
     
-    print(f"Starting from: {current_time.strftime('%I:%M %p')}")
-    print(f"Printing times until: {end_time.strftime('%I:%M %p')}")
-    
-    # Calculate minutes until next full hour
-    minutes_to_next_hour = 60 - current_time.minute
-    
-    # Print initial time
-    print(current_time.strftime('%I:%M %p'))
-    
-    # Add initial partial hour
-    current_time += timedelta(minutes=minutes_to_next_hour)
-    
-    # Continue with hourly increments
-    while current_time <= end_time:
-        print(current_time.strftime('%I:%M %p'))
-        current_time += timedelta(hours=1)
-'''
     time_list = []
     time_list_str = []
     time_list.append(current_time)
@@ -47,9 +27,20 @@ def print_hourly_times():
         time_list.append(first_full_hour)
         time_list_str.append(first_full_hour.strftime('%I:%M %p'))
     
+    def format_filename(extension):
+        now = datetime.now()
+        # file name in the format of hours_may_8_2025.md or .txt
+        # i want month name not month number
+        month_name = now.strftime('%B').lower()
+        print(month_name)
+        filename = f"hours_{month_name}_{now.day}_{now.year}.{extension}"
+        return filename
+    
     def write_to_file(time_list):
+        now = datetime.now()
         hour_count = len(time_list) - 1
-        with open("time_left_by_hour.md", "w") as file:
+        filename = format_filename('md')
+        with open(filename, "w") as file:
             file.write(f"# Time left by hour\n\n")
             file.write(f"| Hours Left | Start Time | End Time |\n")
             file.write(f"|------------|------------|----------|\n")
@@ -63,8 +54,10 @@ def print_hourly_times():
                     break
     write_to_file(time_list)
     def write_to_text_file(time_list):
+        now = datetime.now()
         hour_count = len(time_list) - 1
-        with open("time_left_by_hour.txt", "w") as file:
+        filename = format_filename('txt')
+        with open(filename, "w") as file:
             file.write(f"# Time left by hour\n")
             # format for output 8 → start_time → end_time
             counter = 0
